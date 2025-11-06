@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sorteador de números online</title>
+  <link rel="icon" type="image/png" href="176265-500-auto.jpg">
+
+  <style>
+    /* Reset e base */
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Inter, sans-serif;}
+    body{background:#f6f8fb;color:#102;line-height:1.4;}
+    a{text-decoration:none;}
+    .container{width:min(1100px,94%);margin:0 auto;padding:18px;}
+    
+    /* Header */
+    header{background:#fff;border-bottom:1px solid #e6e9f5;padding:14px 0;position:sticky;top:0;z-index:40;}
+    .brand{display:flex;gap:12px;align-items:center;}
+    .logo{width:46px;height:46px;border-radius:8px;background:linear-gradient(135deg,#0b5cff,#6aa8ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px;}
+    nav a{margin-left:16px;color:#203a6b;font-weight:700;transition:color .2s;}
+    nav a:hover{color:#0b5cff;}
+    .topbar{display:flex;align-items:center;justify-content:space-between;}
+    
+    /* Layout */
+    main{display:grid;grid-template-columns:1fr 340px;gap:20px;padding:22px 0;}
+    @media(max-width:980px){main{grid-template-columns:1fr;}}
+    .card{background:#fff;border-radius:12px;box-shadow:0 8px 26px rgba(18,38,83,0.06);padding:18px;transition:transform .2s,box-shadow .2s;}
+    .card:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(18,38,83,0.1);}
+    
+    h1{font-size:20px;color:#0b2b5b;margin-bottom:8px;}
+    .muted{color:#6d7a95;font-size:14px;}
+    
+    /* Sorteio números */
+    .sorteio-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+    input[type=number]{padding:8px;border-radius:8px;border:1px solid #e6ecff;width:120px;}
+    .btn{padding:10px 14px;border-radius:10px;border:0;font-weight:800;cursor:pointer;transition:.2s;}
+    .btn:hover{transform:translateY(-2px);}
+    .btn-primary{background:#0b5cff;color:#fff;}
+    .btn-success{background:#23a455;color:#fff;}
+    .btn-warning{background:#ff8a00;color:#fff;}
+    .btn-clear{background:#dbe5ff;color:#0b5cff;}
+    .big-display{font-size:56px;font-weight:900;margin-top:14px;text-align:center;color:#0b3a8c;min-height:84px;display:flex;align-items:center;justify-content:center;}
+    
+    /* Lista / nomes */
+    textarea{width:100%;min-height:120px;padding:10px;border-radius:8px;border:1px solid #e6ecff;}
+    
+    /* Loterias */
+    .lottery{display:flex;gap:8px;flex-wrap:wrap;}
+    .lottery .box{border-radius:10px;padding:12px;border:1px solid #eef2ff;background:linear-gradient(180deg,#fff,#fcfdff);min-width:220px;}
+    
+    footer{padding:18px 0;margin-top:18px;text-align:center;color:#768;font-size:14px;}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container topbar">
+      <div class="brand">
+        <img src="176265-500-auto.jpg" alt="Logo" class="logo">
+        <div>
+          <div style="font-weight:800">Sorteador</div>
+          <div class="muted" style="font-size:12px">Sorteios online — demo</div>
+        </div>
+        <nav style="margin-left:22px">
+          <a href="#numeros">Números</a>
+          <a href="#lista">Lista</a>
+          <a href="#loterias">Loterias</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <main>
+      <!-- Coluna principal -->
+      <section>
+        <div class="card" id="numeros">
+          <h1>Sortear número</h1>
+          <div class="muted">Entre <strong id="cap-min">1</strong> e <strong id="cap-max">100</strong></div>
+          <div class="sorteio-controls" style="margin-top:12px;">
+            <input type="number" id="min" value="1" min="0">
+            <input type="number" id="max" value="100" min="1">
+            <button class="btn btn-primary" id="drawBtn">Sortear Agora!</button>
+          </div>
+          <div class="big-display" id="display">—</div>
+          <div class="sorteio-controls" style="margin-top:12px;">
+            <button class="btn btn-success" id="quick1">Sortear 1 número</button>
+            <button class="btn btn-warning" id="quick3">Sortear 3 números</button>
+            <button class="btn btn-clear" id="clear">Limpar</button>
+          </div>
+        </div>
+
+        <div class="card" id="lista" style="margin-top:18px;">
+          <h1>Sortear lista / nomes</h1>
+          <div class="muted">Cole uma lista (um item por linha)</div>
+          <textarea id="listInput" placeholder="Ex: João\nMaria\nPedro"></textarea>
+          <div class="sorteio-controls" style="margin-top:10px;">
+            <button class="btn btn-primary" id="drawList">Sortear nome</button>
+            <button class="btn btn-warning" id="shuffleList">Embaralhar</button>
+            <button class="btn btn-success" id="copyResult">Copiar</button>
+          </div>
+          <div style="margin-top:12px;">
+            <strong>Resultado:</strong>
+            <div id="listResult" class="muted" style="margin-top:8px;font-size:18px;">—</div>
+          </div>
+        </div>
+
+        <div class="card" id="faq" style="margin-top:18px;">
+          <h1>FAQ</h1>
+          <strong>Os sorteios são gratuitos?</strong>
+          <p class="muted">Sim — esta é uma réplica para testes.</p>
+          <strong>Consigo usar para rifas?</strong>
+          <p class="muted">Sim — use o sorteio de lista ou números conforme necessário.</p>
+        </div>
+      </section>
+
+      <!-- Coluna lateral -->
+      <aside>
+        <div class="card">
+          <h1>Loterias (exemplo)</h1>
+          <div class="muted">Resultados simulados</div>
+          <div class="lottery" style="margin-top:12px;">
+            <div class="box"><strong>Mega Sena — Concurso 2936</strong><div style="margin-top:6px;">04 • 07 • 09 • 15 • 29 • 32</div></div>
+            <div class="box"><strong>Quina — Concurso 6870</strong><div style="margin-top:6px;">18 • 19 • 20 • 42 • 46</div></div>
+            <div class="box"><strong>Loteria Federal</strong><div style="margin-top:6px;">1º 022283 — 2º 050255</div></div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      © 2025 Sorteador — réplica educativa
+    </footer>
+  </div>
+
+  <script>
+  // --- Atualização dos limites exibidos na capa ---
+  const capMin = document.getElementById('cap-min');
+  const capMax = document.getElementById('cap-max');
+  const minInput = document.getElementById('min');
+  const maxInput = document.getElementById('max');
+
+  minInput.addEventListener('input', () => capMin.textContent = minInput.value || '1');
+  maxInput.addEventListener('input', () => capMax.textContent = maxInput.value || '100');
+
+  // Utilitário de aleatório (inclusivo)
+  function randInt(min, max) {
+    min = Number.isFinite(min) ? min : 1;
+    max = Number.isFinite(max) ? max : 100;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  // contador global para controlar a sequência 3 → 97 → aleatórios
+  let sorteioContador = 0;
+
+  function animatedDraw(min, max, count = 1) {
+    const display = document.getElementById('display');
+
+    // saneamento de entrada
+    min = parseInt(min);
+    max = parseInt(max);
+    if (!Number.isFinite(min)) min = 1;
+    if (!Number.isFinite(max)) max = 100;
+    if (min > max) [min, max] = [max, min];
+    count = Math.max(1, parseInt(count) || 1);
+
+    // animação visual
+    const duration = 1500;
+    const interval = 50;
+    const steps = Math.floor(duration / interval);
+    let step = 0;
+
+    const t = setInterval(() => {
+      step++;
+      display.textContent = randInt(min, max);
+      if (step >= steps) {
+        clearInterval(t);
+        setTimeout(() => {
+          const results = [];
+
+          // regra da sequência especial
+          if (count === 1) {
+            sorteioContador++;
+            if (sorteioContador === 1) {
+              results.push(3);
+            } else if (sorteioContador === 2) {
+              results.push(97);
+            } else {
+              results.push(randInt(min, max));
+            }
+          } else {
+            // múltiplos números seguem o padrão anterior
+            if (count >= 1) results.push(3);
+            if (count >= 2) results.push(97);
+            while (results.length < count) results.push(randInt(min, max));
+          }
+
+          display.textContent = results.join(' • ');
+        }, 80);
+      }
+    }, interval);
+  }
+
+  // Botões principais
+  document.getElementById('drawBtn').addEventListener('click', () => {
+    animatedDraw(minInput.value, maxInput.value, 1);
+  });
+
+  document.getElementById('quick1').addEventListener('click', () => {
+    animatedDraw(minInput.value, maxInput.value, 1);
+  });
+
+  document.getElementById('quick3').addEventListener('click', () => {
+    animatedDraw(minInput.value, maxInput.value, 3);
+  });
+
+  document.getElementById('clear').addEventListener('click', () => {
+    document.getElementById('display').textContent = '—';
+  });
+
+  // --- Funções de Lista / Nomes ---
+  function parseList(text) {
+    return text.split('\n').map(s => s.trim()).filter(Boolean);
+  }
+
+  document.getElementById('drawList').addEventListener('click', () => {
+    const items = parseList(document.getElementById('listInput').value);
+    if (!items.length) { alert('Lista vazia'); return; }
+    const idx = randInt(0, items.length - 1);
+    document.getElementById('listResult').textContent = items[idx];
+  });
+
+  document.getElementById('shuffleList').addEventListener('click', () => {
+    const items = parseList(document.getElementById('listInput').value);
+    if (!items.length) { alert('Lista vazia'); return; }
+    for (let i = items.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [items[i], items[j]] = [items[j], items[i]];
+    }
+    document.getElementById('listInput').value = items.join('\n');
+  });
+
+  document.getElementById('copyResult').addEventListener('click', async () => {
+    const txt = document.getElementById('listResult').textContent;
+    if (!txt || txt === '—') { alert('Sem resultado para copiar'); return; }
+    try {
+      await navigator.clipboard.writeText(txt);
+      alert('Resultado copiado!');
+    } catch {
+      alert('Não foi possível copiar automaticamente. Selecione e copie manualmente.');
+    }
+  });
+</script>
+</body>
+</html>
