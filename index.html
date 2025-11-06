@@ -93,7 +93,7 @@
         <div class="card" id="lista" style="margin-top:18px;">
           <h1>Sortear lista / nomes</h1>
           <div class="muted">Cole uma lista (um item por linha)</div>
-          <textarea id="listInput" placeholder="Ex: João\nMaria\nPedro"></textarea>
+          <textarea id="listInput" placeholder="Ex: João\Maria\Pedro"></textarea>
           <div class="sorteio-controls" style="margin-top:10px;">
             <button class="btn btn-primary" id="drawList">Sortear nome</button>
             <button class="btn btn-warning" id="shuffleList">Embaralhar</button>
@@ -133,7 +133,7 @@
     </footer>
   </div>
 
-  <script>
+ <script>
   // --- Atualização dos limites exibidos na capa ---
   const capMin = document.getElementById('cap-min');
   const capMax = document.getElementById('cap-max');
@@ -178,21 +178,21 @@
         setTimeout(() => {
           const results = [];
 
-          // regra da sequência especial
+          // 🔹 Regra da sequência personalizada
           if (count === 1) {
             sorteioContador++;
             if (sorteioContador === 1) {
-              results.push(3);
+              results.push(3); // 1º sorteio = 3
             } else if (sorteioContador === 2) {
-              results.push(97);
+              results.push(97); // 2º sorteio = 97
             } else {
-              results.push(randInt(min, max));
+              results.push(randInt(min, max)); // depois, aleatório
             }
           } else {
-            // múltiplos números seguem o padrão anterior
-            if (count >= 1) results.push(3);
-            if (count >= 2) results.push(97);
-            while (results.length < count) results.push(randInt(min, max));
+            // 🔹 Sorteio de vários números = totalmente aleatório
+            for (let i = 0; i < count; i++) {
+              results.push(randInt(min, max));
+            }
           }
 
           display.textContent = results.join(' • ');
